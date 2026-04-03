@@ -13,6 +13,7 @@ pipeline {
         }
         stage('Install Docker') {
             steps {
+                sh 'sudo auto purge docker*'
                 sh 'sudo apt-get update -y'
                 sh 'sudo apt-get install -y docker.io'
                 sh 'sudo systemctl start docker'
