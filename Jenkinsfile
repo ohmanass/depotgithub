@@ -11,13 +11,5 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/ohmanass/depotgithub.git'
             }
         }
-        stage('Install Docker') {
-            steps {
-                sh 'sudo apt-get update -y'
-                sh 'sudo apt-get install -y docker.io'
-                sh 'sudo systemctl start docker'
-                sh 'sudo chmod 666 /var/run/docker.sock'
-            }
-        }
     }
 }
