@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+    stages {
+        stage('CleanUp Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('Cloner le GitHub') {
+            steps {
+                git branch: 'main', url: 'https://github.com/ohmanass/depotgithub.git'
+            }
+        }
+        stage('Build image Docker') {
+            steps {
+                sh 'docker image rm -f myapp-image || true'
+                sh 'docker build -t myapp-image .'
+                sh 'docker image ls'
+            }
+        }
+    }
+}

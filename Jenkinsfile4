@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+    stages {
+        stage('CleanUp Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('Cloner le GitHub') {
+            steps {
+                git branch: 'main', url: 'https://github.com/ohmanass/depotgithub.git'
+            }
+        }
+        stage('Install Docker') {
+            steps {
+                sh 'sudo apt-get update -y'
+                sh 'sudo apt-get install -y docker.io'
+                sh 'sudo systemctl start docker'
+                sh 'sudo chmod 666 /var/run/docker.sock'
+            }
+        }
+        stage('Build image Docker') {
+            steps {
+                sh 'docker image rm -f myapp-image || true'
+                sh 'docker build -t myapp-image .'
+                sh 'docker image ls'
+            }
+        }
+        stage('CleanUp Docker') {
+            steps {
+                sh 'docker rm -f myapp || true'
+                sh 'docker image prune -f || true'
+            }
+        }
+        stage('Deploy conteneur') {
+            steps {
+                sh 'docker run -d --name myapp myapp-image'
+                sh 'docker ps'
+                sh 'docker inspect -f "{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}" myapp'
+            }
+        }
+    }
+}
